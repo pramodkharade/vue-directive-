@@ -7,12 +7,12 @@
         <p v-html="'<i>This is dnyanda Kharade</i>'"></p>
       </div>
     </div>
-    <hr>
+    <hr />
     <div class="row">
       <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-        <h1>Custom  directives</h1>
+        <h1>Custom directives</h1>
         <p v-highlight:background.delayed="'red'">This is some text</p>
-        <p v-local-highlight:background.delayed="'green'">This is some text Local Directive</p>
+        <p v-local-highlight:background.delayed.blink="'green'">This is some text Local Directive</p>
       </div>
     </div>
   </div>
@@ -20,29 +20,43 @@
 
 <script>
 export default {
-  directives:{
-    'local-highlight':{
-        bind(el, binding, vnode) {
-
-      let delay = 0;
-      if(binding.modifiers['delayed']){
-        delay = 3000;
-      }
-      setTimeout(()=>{
-        if (binding.arg == 'background') {
-          el.style.backgroundColor = binding.value;
-        } else {
-          el.style.color = binding.value;
-
+  directives: {
+    "local-highlight": {
+      bind(el, binding, vnode) {
+        let delay = 0;
+        if (binding.modifiers["delayed"]) {
+          delay = 3000;
         }
-      },delay);
-
-    }
+        if (binding.modifiers["blink"]) {
+          let mainColor = binding.value;
+          let secondColor = "yellow";
+          let currentColor = mainColor;
+          setTimeout(() => {
+            setInterval(() => {
+              currentColor === secondColor
+                ? currentColor = mainColor
+                : currentColor = secondColor;
+              if (binding.arg == "background") {
+                el.style.backgroundColor = currentColor;
+              } else {
+                el.style.color = currentColor;
+              }
+            }, 1000);
+          }, delay);
+        } else {
+          setTimeout(() => {
+            if (binding.arg == "background") {
+              el.style.backgroundColor = binding.value;
+            } else {
+              el.style.color = binding.value;
+            }
+          }, delay);
+        }
+      }
     }
   }
-}
+};
 </script>
 
 <style>
-
 </style>
